@@ -110,6 +110,18 @@ int MovePath(DTree* dTree, const char* path);
 TreeNode* ChangeToSubdirectory(TreeNode* current, const char* token);
 
 
+//utility.c
+int ModeToPermission(TreeNode* node) //권한
+void PermissionPrint(TreeNode* node)
+void NodeRemove(TreeNode* node) //삭제
+void DirRemove(TreeNode* node) 
+TreeNode* DirExistion(DTree* tree, const char* name, char type) //노드 탐색
+char* TakeDir(const char* path) //경로 추출
+void TakePath(DirectoryTree* tree, TreeNode* node, Stack* stack); 
+void ModeConversAll(TreeNode* node, int mode); //모드 변경
+void ChangeOwnerAll(TreeNode* node, char* userName); //소유자/그룹 변경
+int DirRead(DirectoryTree* tree, char* line, char* target, int flag); //특정 경로 탐색
+
 //user.c
 void Login(UserList* userList, DTree* dTree);  //로그인
 UserList* UserListLoad(void); //사용자 정보 관리
