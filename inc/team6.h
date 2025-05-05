@@ -1,0 +1,99 @@
+//team6.h 의 모든 내용은 코드 짜면서 수정 필요함 (일단 가장 기본적인 것만 넣어둠)
+
+
+//헤더 파일 안 쓴 거 나중에 삭제 + 쓰면서 계속 추가
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <pthread.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+
+//코드 짜면서 숫자 변경하기 
+#define MAX_BURRER 512
+#define MAX_LENGTH 256 //문자열 길이 제한
+#define MAX_DIR 50 //최대 디렉터리 수
+#define MAX_NAME 32 //이름 최대 길이
+#define MAX_PASSWORD 32
+#define MAX_THREAD 50 
+
+
+
+//사용자 정보
+typedef struct UserNode {
+    char name[MAX_NAME];
+    char password[MAX_PASSWORD]; 
+    char dir[MAX_DIR];
+    int UID;  //user ID
+    int GID;  //group ID
+    int year;
+    int month;
+    int day;
+    int wday; //요일
+    int hour;
+    int min;
+    int sec;
+    struct UserNode* LinkNode;
+} UserNode;
+
+//사용자 목록 관리
+typedef struct UserTag{
+    int tUID; //top UID
+    int tGID; //top GID
+    UserNode* head;
+    UserNode* tail;
+    UserNode* current;
+} UserList;
+
+//디렉토리 & 파일 정보 
+typedef struct TreeNode{
+    char name[MAX_NAME];
+    char type;  // 디렉토리인지 파일인지 구분
+    int mode; 
+    int permisssion[9];
+    int SIZE; //파일이면 byte크기, 디렉토리면 하위 노드 개수
+    int UID;
+    int GID;
+    int month;
+    int day;
+    int hour;
+    int min;
+    struct TreeNode* Parent;
+    struct TreeNode* LeftChild;
+    struct TreeNode* RightChild;
+}TreeNode;
+
+
+//디렉토리 트리 관리
+typedef struct DTreeTag{
+    TreeNode* root;
+    TreeNode* current;
+} DTree;
+
+
+//스택 정보
+typedef struct StackNode{
+    char name[MAX_NAME];
+    struct StackNode* LinkNode;
+}StackNode;
+
+// 스택 관리
+typedef struct StackTag{
+    StackNode* TopNode;
+}Stack;
+
+//thread 관리
+typedef struct ThreadTag{
+    DTree* MultiDTree;
+    DTree* NodeFileName;
+    char* command;
+    char* PathCopy;
+    char* AddValues;
+}ThreadTag;
+
+//현재 시간 
+time_t ltime;
+struct tm* Now;
