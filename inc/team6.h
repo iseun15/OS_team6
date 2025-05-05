@@ -95,5 +95,15 @@ typedef struct ThreadTag{
 }ThreadTag;
 
 //현재 시간 
-time_t ltime;
-struct tm* Now;
+extern time_t ltime;
+extern struct tm* Now;
+
+
+
+//dir.c
+TreeNode* ChangeToSubdirectory(TreeNode* current, const char* token);
+int MovePath(DTree* dTree, const char* path);
+
+
+//user.c
+void Login(UserList* userList, DTree* dTree);
