@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 
 //코드 짜면서 숫자 변경하기 
-#define MAX_BURRER 512
+#define MAX_BUFFER 512
 #define MAX_LENGTH 256 //문자열 길이 제한
 #define MAX_DIR 50 //최대 디렉터리 수
 #define MAX_NAME 32 //이름 최대 길이
@@ -94,16 +94,33 @@ typedef struct ThreadTag{
     char* AddValues;
 }ThreadTag;
 
-//현재 시간 
-extern time_t ltime;
-extern struct tm* Now;
+//전역변수
+extern time_t ltime; //현재 시간
+extern struct tm* Now; 
+extern UserList* UsersList;   // 사용자 목록 포인터
+extern FILE* User;    //사용자 파일 포인터
+extern FILE* Dir;
+extern DTree* Linux;
+extern Stack* dStack;
 
 
 
 //dir.c
-TreeNode* ChangeToSubdirectory(TreeNode* current, const char* token);
 int MovePath(DTree* dTree, const char* path);
+TreeNode* ChangeToSubdirectory(TreeNode* current, const char* token);
 
 
 //user.c
-void Login(UserList* userList, DTree* dTree);
+void Login(UserList* userList, DTree* dTree);  //로그인
+UserList* UserListLoad(void); //사용자 정보 관리
+void UserListSave(UserList* userList);
+UserNode* ExistUser(UserList* list, const char* name);
+int OwnPermission(TreeNode* node, char mode) //권한 관리
+
+//stack.c
+int IsEmpty(Stack* stack);
+Stack* StackInitialization();
+int Push(Stack* stack, const char* name);
+char* Pop(Stack* stack);
+void FreeStack(Stack* stack);
+void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)

@@ -4,6 +4,7 @@
 SRC_DIR = ./srcs
 INC_DIR = ./inc
 BUILD_DIR = ./build
+RES_DIR = ./resources
 
 # 실행파일 이름
 TARGET = os_team6
@@ -17,13 +18,17 @@ SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
 # 기본 빌드 명령
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS)|$(RES_DIR)
 	$(CC) -o $@ $^ -lpthread
 
 # .c 파일 =>  .o 파일
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# resource 생성
+$(RES_DIR):
+	mkdir -p $(RES_DIR)
 
 
 clean:
