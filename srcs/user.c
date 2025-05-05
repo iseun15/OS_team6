@@ -163,5 +163,5 @@ int OwnPermission(TreeNode* node, char mode) {
     }
 
     int index = group * 3 + offset;
-    return (node->permisssion[index] == 1) ? 0 : -1;
+    return (node->permission[index] == 1) ? 0 : -1;
 }

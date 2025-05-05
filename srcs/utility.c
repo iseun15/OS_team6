@@ -1,3 +1,5 @@
+//작동 도와주는 함수 모음
+
 #include "team6.h"
 
 //권한 설정 관련
@@ -77,7 +79,7 @@ char* TakeDir(const char* path) {
 }
 
 //디렉토리 경로 생성 및 출력
-void TakePath(DirectoryTree* tree, TreeNode* node, Stack* stack) {
+void TakePath(DTree* tree, TreeNode* node, Stack* stack) {
     TreeNode* cursor = node->Parent;
     char fullPath[MAX_DIR] = "";
 
@@ -88,7 +90,7 @@ void TakePath(DirectoryTree* tree, TreeNode* node, Stack* stack) {
             Push(stack, cursor->name);
             cursor = cursor->Parent;
         }
-        while (!StackIsEmpty(stack)) {
+        while (!IsEmpty(stack)) {
             strcat(fullPath, "/");
             strcat(fullPath, Pop(stack));
         }
@@ -109,7 +111,7 @@ void ModeConversAll(TreeNode* node, int mode) {
 void ChangeOwnerAll(TreeNode* node, char* userName) {
     if (!node || !userName) return;
 
-    UserNode* user = UserExistion(UsersList, userName);
+    UserNode* user = ExistUser(UsersList, userName);
     if (!user) return;
 
     node->UID = user->UID;
@@ -119,7 +121,7 @@ void ChangeOwnerAll(TreeNode* node, char* userName) {
 }
 
 // target 경로 탐색 (for find)
-int DirRead(DirectoryTree* tree, char* line, char* target, int flag) {
+int DirRead(DTree** tree, char* line, char* target, int flag) {
     char* tokens[12];
     char* ptr = strtok(line, " ");
     int i = 0;
