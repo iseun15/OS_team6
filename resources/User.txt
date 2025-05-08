@@ -1,0 +1,3 @@
+osmanager Dongguk**os /home/osmanager 0 0 2025 5 8 4 23 34 20
+-gminji 0000 /home/-gminji 0 1 2025 5 8 4 23 34 20
+minji 0000 /home/minji 1002 1002 2025 5 8 4 23 34 20
