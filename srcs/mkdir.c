@@ -49,7 +49,7 @@ int MakeDir(DTree* dirTree, char* dirName, char type) {
     NewNode->min = Now->tm_min;
     NewNode->Parent = dirTree->current;
     NewNode->LeftChild = NULL;
-    NewNode->RightSibling = NULL;
+    NewNode->RightChild = NULL;
 
     ModeToPermission(NewNode);
 
@@ -57,9 +57,9 @@ int MakeDir(DTree* dirTree, char* dirName, char type) {
         dirTree->current->LeftChild = NewNode;
     } else {
         tmpNode = dirTree->current->LeftChild;
-        while (tmpNode->RightSibling != NULL)
-            tmpNode = tmpNode->RightSibling;
-        tmpNode->RightSibling = NewNode;
+        while (tmpNode->RightChild != NULL)
+            tmpNode = tmpNode->RightChild;
+        tmpNode->RightChild = NewNode;
     }
 
     return 0;
