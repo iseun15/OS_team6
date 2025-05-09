@@ -61,11 +61,20 @@ typedef struct TreeNode{
     int day;
     int hour;
     int min;
+
+    int line;
+    char* contents;
+    char* owner;
+    char* group;
+    struct tm* time;
+
     struct TreeNode* Parent;
     struct TreeNode* LeftChild;
     struct TreeNode* RightChild;
 }TreeNode;
 
+extern TreeNode* lp;
+extern char* arg[];
 
 //디렉토리 트리 관리
 typedef struct DTreeTag{
@@ -136,3 +145,7 @@ int Push(Stack* stack, const char* name);
 char* Pop(Stack* stack);
 void FreeStack(Stack* stack);
 void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)
+
+void cat(void);  // cat 명령어 함수 원형 선언
+void clear(void);  // clear 명령어 함수
+void head(void);  // head 명령어 함수
