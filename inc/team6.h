@@ -136,3 +136,16 @@ int Push(Stack* stack, const char* name);
 char* Pop(Stack* stack);
 void FreeStack(Stack* stack);
 void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)
+
+// team6.h 내에 아래 내용 추가
+
+// mkdir
+int Mkdir(DTree* dirTree, char* cmd);
+int MakeDir(DTree* dirTree, char* dirName, char type);
+
+// chmod
+int chmod_(DTree* dirTree, char* cmd);
+
+// pwd
+int pwd(DTree* dirTree, Stack* stack, char* cmd);
+void PrintPath(DTree* dirTree, Stack* stack);
