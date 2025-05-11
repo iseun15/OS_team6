@@ -147,5 +147,8 @@ void FreeStack(Stack* stack);
 void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)
 
 void cat(void);  // cat 명령어 함수 원형 선언
+void* cat_worker(void* arg);
 void clear(void);  // clear 명령어 함수
+void* clear_worker(void* arg);
 void head(void);  // head 명령어 함수
+void* head_worker(void* arg);
