@@ -136,3 +136,9 @@ int Push(Stack* stack, const char* name);
 char* Pop(Stack* stack);
 void FreeStack(Stack* stack);
 void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)
+
+
+
+void ls(const char* option);
+void cd(const char* path);
+void echo(const char* args);
