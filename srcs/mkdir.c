@@ -15,20 +15,20 @@ int MakeDir(DTree* dirTree, char* dirName, char type) {
     TreeNode* tmpNode = NULL;
 
     if (!NewNode) {
-        perror("메모리 할당 실패");
+        perror("memory allocation failed");
         pthread_mutex_unlock(&tree_mutex);  //예외 시 언락
         return -1;
     }
 
     if (OwnPermission(dirTree->current, 'w') != 0) {
-        printf("mkdir: '%s' 디렉터리를 만들 수 없습니다: 허가 거부\n", dirName);
+        printf("mkdir: '%s' cannot make directory: access denied\n", dirName);
         free(NewNode);
         pthread_mutex_unlock(&tree_mutex);
         return -1;
     }
 
     if (strcmp(dirName, ".") == 0 || strcmp(dirName, "..") == 0) {
-        printf("mkdir: '%s' 디렉터리를 만들 수 없습니다\n", dirName);
+        printf("mkdir: '%s' unable to make directory\n", dirName);
         free(NewNode);
         pthread_mutex_unlock(&tree_mutex);
         return -1;
@@ -36,7 +36,7 @@ int MakeDir(DTree* dirTree, char* dirName, char type) {
 
     tmpNode = DirExistion(dirTree, dirName, type);
     if (tmpNode != NULL && tmpNode->type == 'd') {
-        printf("mkdir: '%s' 디렉터리를 만들 수 없습니다: 파일이 존재합니다\n", dirName);
+        printf("mkdir: '%s' unable to make directory: file alreay exist\n", dirName);
         free(NewNode);
         pthread_mutex_unlock(&tree_mutex);
         return -1;
@@ -84,7 +84,7 @@ void* mkdir_thread(void* arg) {
 // 명령어로 받은 여러 디렉토리를 멀티스레딩으로 생성
 int Mkdir(DTree* dirTree, char* cmd) {
     if (cmd == NULL || strlen(cmd) == 0) {
-        printf("mkdir: 잘못된 입력입니다.\n");
+        printf("mkdir: wrong input.\n");
         return -1;
     }
 
@@ -95,13 +95,13 @@ int Mkdir(DTree* dirTree, char* cmd) {
     char* token = strtok(cmd, " ");
     while (token != NULL && threadCount < MAX_THREAD) {
         if (strcmp(token, ".") == 0 || strcmp(token, "..") == 0) {
-            printf("mkdir: '%s' 생성할 수 없습니다.\n", token);
+            printf("mkdir: '%s' unable to make.\n", token);
         } else {
             args[threadCount].MultiDTree = dirTree;
             args[threadCount].AddValues = strdup(token);
 
             if (pthread_create(&threads[threadCount], NULL, mkdir_thread, (void*)&args[threadCount]) != 0) {
-                perror("스레드 생성 실패");
+                perror("thread creation failed");
                 free(args[threadCount].AddValues);
                 return -1;
             }
