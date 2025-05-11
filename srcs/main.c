@@ -153,56 +153,110 @@ struct tm* Now;
 // }
 
 //pwd 테스트용
+// int main() {
+//     // 사용자 초기화
+//     UsersList = malloc(sizeof(UserList));
+//     UsersList->current = malloc(sizeof(UserNode));
+//     UsersList->current->UID = 1000;
+//     UsersList->current->GID = 1000;
+//     strcpy(UsersList->current->name, "testuser");
+
+//     // 디렉토리 트리 초기화
+//     TreeNode* root = malloc(sizeof(TreeNode));
+//     memset(root, 0, sizeof(TreeNode));
+//     strcpy(root->name, "/");
+//     root->type = 'd';
+//     root->UID = 1000;
+//     root->mode = 755;
+//     ModeToPermission(root);
+
+//     DTree dirTree;
+//     dirTree.root = root;
+//     dirTree.current = root;
+
+//     Linux = malloc(sizeof(DTree));
+//     *Linux = dirTree;
+
+//     Dir = fopen("log.txt", "w");
+//     dStack = StackInitialization();
+
+//     // 디렉토리 생성 및 현재 디렉토리 이동
+//     printf("디렉토리 생성 중...\n");
+//     char cmd_buffer[256];
+//     strcpy(cmd_buffer, "dirA");
+//     Mkdir(&dirTree, cmd_buffer);
+
+//     TreeNode* sub = DirExistion(&dirTree, "dirA", 'd');
+//     if (sub) {
+//         dirTree.current = sub;  // 디렉토리 이동
+//         printf("dirA로 이동 완료.\n");
+//     }
+
+//     // 현재 경로 출력
+//     printf("현재 경로 (pwd): ");
+//     pwd(&dirTree, dStack, NULL);
+
+//     // 메모리 정리
+//     fclose(Dir);
+//     FreeStack(dStack);
+//     free(UsersList->current);
+//     free(UsersList);
+//     free(root);
+//     free(Linux);
+
+//     return 0;
+// }
 int main() {
-    // 사용자 초기화
-    UsersList = malloc(sizeof(UserList));
-    UsersList->current = malloc(sizeof(UserNode));
-    UsersList->current->UID = 1000;
-    UsersList->current->GID = 1000;
-    strcpy(UsersList->current->name, "testuser");
+    // DTree 초기화
+    Linux = (DTree*)malloc(sizeof(DTree));
+    TreeNode* root = (TreeNode*)malloc(sizeof(TreeNode));
+    root->Parent = NULL;
+    root->LeftChild = NULL;
+    root->RightChild = NULL;
+    root->name[0] = '/';
+    root->name[1] = '\0';
+    Linux->root = root;
+    Linux->current = root;
 
-    // 디렉토리 트리 초기화
-    TreeNode* root = malloc(sizeof(TreeNode));
-    memset(root, 0, sizeof(TreeNode));
-    strcpy(root->name, "/");
-    root->type = 'd';
-    root->UID = 1000;
-    root->mode = 755;
-    ModeToPermission(root);
+    // 테스트용 파일 노드 추가
+    TreeNode* file1 = (TreeNode*)malloc(sizeof(TreeNode));
+    strcpy(file1->name, "file1.txt");
+    file1->RightChild = NULL;
+    file1->LeftChild = NULL;
+    file1->name[0] = 'f'; file1->name[1] = 'i'; file1->name[2] = 'l'; file1->name[3] = 'e'; file1->name[4] = '1'; file1->name[5] = '\0';
+    file1->UID = 1000;
+    file1->GID = 1000;
+    file1->month = 5;
+    file1->day = 10;
+    file1->hour = 14;
+    file1->min = 30;
 
-    DTree dirTree;
-    dirTree.root = root;
-    dirTree.current = root;
+    TreeNode* file2 = (TreeNode*)malloc(sizeof(TreeNode));
+    strcpy(file2->name, ".hiddenfile");
+    file2->RightChild = NULL;
+    file2->LeftChild = NULL;
+    file2->UID = 1000;
+    file2->GID = 1000;
+    file2->month = 5;
+    file2->day = 10;
+    file2->hour = 15;
+    file2->min = 00;
 
-    Linux = malloc(sizeof(DTree));
-    *Linux = dirTree;
+    // 링크 연결
+    root->LeftChild = file1;
+    file1->RightChild = file2;
 
-    Dir = fopen("log.txt", "w");
-    dStack = StackInitialization();
+    printf("== 기본 ls 실행 ==\n");
+    ls(NULL);
 
-    // 디렉토리 생성 및 현재 디렉토리 이동
-    printf("디렉토리 생성 중...\n");
-    char cmd_buffer[256];
-    strcpy(cmd_buffer, "dirA");
-    Mkdir(&dirTree, cmd_buffer);
+    printf("\n== ls -a 실행 ==\n");
+    ls("-a");
 
-    TreeNode* sub = DirExistion(&dirTree, "dirA", 'd');
-    if (sub) {
-        dirTree.current = sub;  // 디렉토리 이동
-        printf("dirA로 이동 완료.\n");
-    }
+    printf("\n== ls -l 실행 ==\n");
+    ls("-l");
 
-    // 현재 경로 출력
-    printf("현재 경로 (pwd): ");
-    pwd(&dirTree, dStack, NULL);
-
-    // 메모리 정리
-    fclose(Dir);
-    FreeStack(dStack);
-    free(UsersList->current);
-    free(UsersList);
-    free(root);
-    free(Linux);
+    printf("\n== ls -al 실행 ==\n");
+    ls("-al");
 
     return 0;
 }
