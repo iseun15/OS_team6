@@ -3,99 +3,86 @@
 TreeNode* lp = NULL;
 char* arg[10];
 
-void cat() {
-	TreeNode* temp = lp->LeftChild;
-	int cnt = 0;
-	time_t timer = time(NULL);
+void* cat_worker(void* arg_ptr) {
+    TreeNode* temp = lp->LeftChild;
+    char** argv = (char**)arg_ptr;
+    int cnt = 0;
 
-	if (!strcmp(">", arg[1])) {
-		char sentence[1000] = { 0 };
-		char c;
-		int i = 0;
+    if (!strcmp(argv[1], ">")) {
+        char sentence[1000] = { 0 };
+        char c;
+        int i = 0;
 
-		while (1) {
-			c = getchar();
-			if (c == EOF) {
-				sentence[i] = '\0';
-				break;
-			}
-			sentence[i++] = c;
-		}
+        while ((c = getchar()) != EOF) {
+            sentence[i++] = c;
+        }
+        sentence[i] = '\0';
 
-		i = 0;
-		while (sentence[i] != '\0') {
-			if (sentence[i] == '\n') cnt++;
-			i++;
-		}
+        for (int j = 0; j < i; j++) {
+            if (sentence[j] == '\n') cnt++;
+        }
 
-		TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
-		if (newNode == NULL) return;
+        TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
+        if (!newNode) return NULL;
 
-		newNode->type = '-';
-		strcpy(newNode->name, arg[2]);
-		newNode->contents = strdup(sentence); // strdup로 복사
-		newNode->line = cnt;
-		newNode->LeftChild = NULL;
-		newNode->RightChild = NULL;
-		newNode->parent = lp;
-		newNode->owner = strdup("user");
-		newNode->group = strdup("user");
-		newNode->time = localtime(&timer);
-		newNode->mode[0] = 6;
-		newNode->mode[1] = 6;
-		newNode->mode[2] = 4;
+        newNode->type = '-';
+        strcpy(newNode->name, argv[2]);
+        newNode->contents = strdup(sentence);
+        newNode->line = cnt;
+        newNode->LeftChild = NULL;
+        newNode->RightChild = NULL;
+        newNode->parent = lp;
+        newNode->owner = strdup("user");
+        newNode->group = strdup("user");
 
-		if (temp == NULL) {
-			lp->LeftChild = newNode;
-		} else {
-			while (temp->RightChild)
-				temp = temp->RightChild;
-			temp->RightChild = newNode;
-		}
-	} 
-	else {
-		if (!strcmp("-n", arg[1])) {
-			while (temp) {
-				if (!strcmp(temp->name, arg[2])) {
-					char* strCopy = strdup(temp->contents);
-					char* token = strtok(strCopy, "\n");
-					for (int l = 1; l <= temp->line && token; l++) {
-						printf("\t%d  %s\n", l, token);
-						token = strtok(NULL, "\n");
-					}
-					free(strCopy);
-					return;
-				}
-				temp = temp->RightChild;
-			}
-			printf("현재 디렉토리에서 %s 이름을 가진 파일을 찾을 수 없음\n", arg[2]);
-		} 
-		else {
-			while (temp) {
-				if (!strcmp(temp->name, arg[1])) {
-					printf("%s", temp->contents);
-					return;
-				}
-				temp = temp->RightChild;
-			}
-			printf("현재 디렉토리에서 %s 이름을 가진 파일을 찾을 수 없음\n", arg[1]);
-		}
-	}
-}
+        time_t timer = time(NULL);
+        newNode->time = localtime(&timer);
+        newNode->mode[0] = 6;
+        newNode->mode[1] = 6;
+        newNode->mode[2] = 4;
 
-int main(int argc, char* argv[]) {
-    for (int i = 0; i < argc; i++) {
-        arg[i] = argv[i];
+        if (temp == NULL) {
+            lp->LeftChild = newNode;
+        } else {
+            while (temp->RightChild)
+                temp = temp->RightChild;
+            temp->RightChild = newNode;
+        }
+    }
+    else {
+        if (!strcmp(argv[1], "-n")) {
+            while (temp) {
+                if (!strcmp(temp->name, argv[2])) {
+                    char* token = strtok(strdup(temp->contents), "\n");
+                    for (int l = 1; token && l <= temp->line; l++) {
+                        printf("\t%d  %s\n", l, token);
+                        token = strtok(NULL, "\n");
+                    }
+                    return NULL;
+                }
+                temp = temp->RightChild;
+            }
+            printf("현재 디렉토리에서 %s 이름을 가진 파일을 찾을 수 없음\n", argv[2]);
+        } else {
+            while (temp) {
+                if (!strcmp(temp->name, argv[1])) {
+                    printf("%s", temp->contents);
+                    return NULL;
+                }
+                temp = temp->RightChild;
+            }
+            printf("현재 디렉토리에서 %s 이름을 가진 파일을 찾을 수 없음\n", argv[1]);
+        }
     }
 
-    // 예시: 현재 디렉토리를 가리키는 노드 설정
-    TreeNode root;
-    memset(&root, 0, sizeof(TreeNode));
-    strcpy(root.name, "/");
-    root.type = 'd';
-    lp = &root;
+    return NULL;
+}
 
-    cat(); // cat 함수 실행
-
-    return 0;
+void cat() {
+    pthread_t tid;
+    if (pthread_create(&tid, NULL, cat_worker, arg) != 0) {
+        perror("스레드 생성 실패");
+        return;
+    }
+    pthread_join(tid, NULL);
 }
