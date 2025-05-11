@@ -1,5 +1,5 @@
 //team6.h 의 모든 내용은 코드 짜면서 수정 필요함 (일단 가장 기본적인 것만 넣어둠)
-
+// #pragma once//임시 추후 삭제
 
 //헤더 파일 안 쓴 거 나중에 삭제 + 쓰면서 계속 추가
 #include <stdio.h>
@@ -92,6 +92,7 @@ typedef struct ThreadTag{
     char* command;
     char* PathCopy;
     char* AddValues;
+    char AddValuesBuffer[MAX_NAME];//임시 추후 삭제
 }ThreadTag;
 
 //전역변수
@@ -102,6 +103,8 @@ extern FILE* User;    //사용자 파일 포인터
 extern FILE* Dir;
 extern DTree* Linux;
 extern Stack* dStack;
+extern pthread_mutex_t dir_mutex;// 락 설정(안정성 향상)
+
 
 
 
