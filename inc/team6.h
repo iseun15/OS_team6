@@ -1,5 +1,5 @@
 //team6.h 의 모든 내용은 코드 짜면서 수정 필요함 (일단 가장 기본적인 것만 넣어둠)
-
+// #pragma once//임시 추후 삭제
 
 //헤더 파일 안 쓴 거 나중에 삭제 + 쓰면서 계속 추가
 #include <stdio.h>
@@ -99,6 +99,7 @@ typedef struct ThreadTag{
     char* command;
     char* PathCopy;
     char* AddValues;
+    char AddValuesBuffer[MAX_NAME];//임시 추후 삭제
 }ThreadTag;
 
 //전역변수
@@ -111,6 +112,8 @@ extern DTree* Linux;
 extern Stack* dStack;
 extern TreeNode* lp;
 extern char* arg[];
+extern pthread_mutex_t dir_mutex;// 락 설정(안정성 향상)
+
 
 
 
@@ -160,3 +163,17 @@ void* head_worker(void* arg);
 void tail(void);
 void* tail_worker(void* arg);
 
+
+
+// team6.h 내에 아래 내용 추가
+
+// mkdir
+int Mkdir(DTree* dirTree, char* cmd);
+int MakeDir(DTree* dirTree, char* dirName, char type);
+
+// chmod
+int chmod_(DTree* dirTree, char* cmd);
+
+// pwd
+int pwd(DTree* dirTree, Stack* stack, char* cmd);
+void PrintPath(DTree* dirTree, Stack* stack);
