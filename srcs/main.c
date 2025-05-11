@@ -1,4 +1,3 @@
-
 #include "team6.h"
 
 //전역 변수

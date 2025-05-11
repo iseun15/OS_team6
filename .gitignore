@@ -2,6 +2,8 @@ build/
 *.o
 *.out
 os_team6
+
 .DS_Store
 srcs/.DS_Store
+
 
