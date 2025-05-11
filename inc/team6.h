@@ -149,6 +149,7 @@ char* Pop(Stack* stack);
 void FreeStack(Stack* stack);
 void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)
 
+
 //명령어 모음
 void adduser(char* argument, DTree* dirtree, UserList* userlist); //김민지 추가
 int mv(DTree* TreeDir, char* cmd); //김민지 추가
@@ -177,3 +178,9 @@ int chmod_(DTree* dirTree, char* cmd);
 // pwd
 int pwd(DTree* dirTree, Stack* stack, char* cmd);
 void PrintPath(DTree* dirTree, Stack* stack);
+
+
+void ls(const char* option);
+void cd(const char* path);
+void echo(const char* args);
+
