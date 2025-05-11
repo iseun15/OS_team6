@@ -61,6 +61,13 @@ typedef struct TreeNode{
     int day;
     int hour;
     int min;
+  
+    int line;
+    char* contents;
+    char* owner;
+    char* group;
+    struct tm* time;
+  
     struct TreeNode* Parent;
     struct TreeNode* LeftChild;
     struct TreeNode* RightChild;
@@ -102,6 +109,8 @@ extern FILE* User;    //사용자 파일 포인터
 extern FILE* Dir;
 extern DTree* Linux;
 extern Stack* dStack;
+extern TreeNode* lp;
+extern char* arg[];
 
 
 
@@ -135,12 +144,17 @@ Stack* StackInitialization();
 int Push(Stack* stack, const char* name);
 char* Pop(Stack* stack);
 void FreeStack(Stack* stack);
-
-
 void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)
 
+//명령어 모음
 void adduser(char* argument, DTree* dirtree, UserList* userlist); //김민지 추가
 int mv(DTree* TreeDir, char* cmd); //김민지 추가
 int rmdir_cmd(DTree* TreeDir, char* cmd); //김민지 추가
 
-void PrintStack(Stack* stack); //추후 제거 예정(디버깅용)
+void cat(void);  // cat 명령어 함수 원형 선언
+void* cat_worker(void* arg);
+void clear(void);  // clear 명령어 함수
+void* clear_worker(void* arg);
+void head(void);  // head 명령어 함수
+void* head_worker(void* arg);
+
