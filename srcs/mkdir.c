@@ -1,8 +1,8 @@
 #include "team6.h"
 
 // 시간 전역 변수 정의
-time_t ltime;
-struct tm* Now;
+// time_t ltime;
+// struct tm* Now;
 
 // 뮤텍스 정의 (외부 사용 시 extern 필요)
 pthread_mutex_t tree_mutex = PTHREAD_MUTEX_INITIALIZER;

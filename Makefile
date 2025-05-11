@@ -18,7 +18,8 @@ SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
 # 기본 빌드 명령
-$(TARGET): $(OBJS)|$(RES_DIR)
+all: $(BUILD_DIR)/$(TARGET)
+$(BUILD_DIR)/$(TARGET): $(OBJS) | $(RES_DIR)
 	$(CC) -o $@ $^ -lpthread
 
 # .c 파일 =>  .o 파일
@@ -32,6 +33,6 @@ $(RES_DIR):
 
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
+	rm -rf $(BUILD_DIR)/$(TARGET) $(BUILD_DIR)
 
-.PHONY: clean   #만약 clean 파일 존재하면, 파일이 아니라 명령어로 작동할 수 있게 함
+.PHONY: clean all  #만약 clean 파일 존재하면, 파일이 아니라 명령어로 작동할 수 있게 함
