@@ -157,4 +157,6 @@ void clear(void);  // clear 명령어 함수
 void* clear_worker(void* arg);
 void head(void);  // head 명령어 함수
 void* head_worker(void* arg);
+void tail(void);
+void* tail_worker(void* arg);
 

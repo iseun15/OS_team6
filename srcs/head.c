@@ -1,12 +1,12 @@
 #include "team6.h"
 
-TreeNode* lp = NULL;      // 현재 디렉토리
-char* arg[10];            // 명령어 인자 저장용
+// TreeNode* lp = NULL;      // 현재 디렉토리
+// char* arg[10];            // 명령어 인자 저장용
 
 // 작업 함수: head 명령어 수행
 void* head_worker(void* arg_ptr) {
     char** argv = (char**)arg_ptr;
-    TreeNode* temp = lp->lchild;
+    TreeNode* temp = lp->LeftChild;
     int line_to_print = 10;
 
     // 옵션 처리: head -n [줄수] [파일이름]

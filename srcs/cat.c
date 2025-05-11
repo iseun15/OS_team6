@@ -1,26 +1,30 @@
 #include "team6.h"
 
-TreeNode* lp = NULL;
-char* arg[10];
+// TreeNode* lp = NULL;
+// char* arg[10];
 
 void* cat_worker(void* arg_ptr) {
     TreeNode* temp = lp->LeftChild;
     char** argv = (char**)arg_ptr;
-    int cnt = 0;
 
     if (!strcmp(argv[1], ">")) {
         char sentence[1000] = { 0 };
-        char c;
+        char line[256];
+        char* owner = "user";
+        char* group = "user";
         int i = 0;
+        int cnt = 0;  
 
-        while ((c = getchar()) != EOF) {
-            sentence[i++] = c;
+        
+        while (fgets(line, sizeof(line), stdin)) {
+            for (int j = 0; line[j] != '\0' && i < sizeof(sentence) - 1; j++) {
+                sentence[i++] = line[j];
+                if (line[j] == '\n') cnt++;
+            }
         }
         sentence[i] = '\0';
 
-        for (int j = 0; j < i; j++) {
-            if (sentence[j] == '\n') cnt++;
-        }
+        clearerr(stdin);
 
         TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
         if (!newNode) return NULL;
@@ -31,15 +35,14 @@ void* cat_worker(void* arg_ptr) {
         newNode->line = cnt;
         newNode->LeftChild = NULL;
         newNode->RightChild = NULL;
-        newNode->parent = lp;
-        newNode->owner = strdup("user");
-        newNode->group = strdup("user");
+        newNode->Parent = lp;
+        newNode->owner = strdup(owner);
+        newNode->group = strdup(group);
 
         time_t timer = time(NULL);
         newNode->time = localtime(&timer);
-        newNode->mode[0] = 6;
-        newNode->mode[1] = 6;
-        newNode->mode[2] = 4;
+        newNode->mode = 0644;
+        ModeToPermission(newNode);
 
         if (temp == NULL) {
             lp->LeftChild = newNode;
@@ -77,6 +80,7 @@ void* cat_worker(void* arg_ptr) {
 
     return NULL;
 }
+
 
 void cat() {
     pthread_t tid;
