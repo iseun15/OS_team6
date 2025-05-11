@@ -1,23 +1,23 @@
-#include "team6.h"
+// #include "team6.h"
 
-//전역 변수
-time_t ltime; 
-struct tm* Now; 
-UserList* UsersList;   
-FILE* User;    
-FILE* Dir;
-DTree* Linux;
-Stack* dStack;
-
-
-int main() {
-
-    dStack = StackInitialization();
-    UsersList = UserListLoad();
-
-    Login(UsersList, Linux);
-    UserListSave(UsersList);
+// //전역 변수
+// time_t ltime; 
+// struct tm* Now; 
+// UserList* UsersList;   
+// FILE* User;    
+// FILE* Dir;
+// DTree* Linux;
+// Stack* dStack;
 
 
-    return 0;
-}
+// int main() {
+
+//     dStack = StackInitialization();
+//     UsersList = UserListLoad();
+
+//     Login(UsersList, Linux);
+//     UserListSave(UsersList);
+
+
+//     return 0;
+// }
