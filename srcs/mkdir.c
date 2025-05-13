@@ -2,7 +2,7 @@
 
 // 디렉토리 하나 생성 함수 (뮤텍스 포함)
 int MakeDir(DTree* dirTree, char* dirName, char type) {
-    pthread_mutex_t tree_mutex = PTHREAD_MUTEX_INITIALIZER;//지역변수로 정의 중복 방지
+    
     pthread_mutex_lock(&tree_mutex);
 
     TreeNode* NewNode = (TreeNode*)malloc(sizeof(TreeNode));
