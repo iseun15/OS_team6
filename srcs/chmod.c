@@ -38,7 +38,7 @@ int chmod_(DTree* dirTree, char* cmd) {
     while (dirName != NULL) {
         TreeNode* target = DirExistion(dirTree, dirName, 'd');
         if (!target)
-            target = DirExistion(dirTree, dirName, 'f');
+            target = DirExistion(dirTree, dirName, '-');
 
         if (target) {
             if (OwnPermission(target, 'w') != 0) {
