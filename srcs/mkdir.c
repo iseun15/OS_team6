@@ -1,14 +1,8 @@
 #include "team6.h"
 
-// 시간 전역 변수 정의
-// time_t ltime;
-// struct tm* Now;
-
-// 뮤텍스 정의 (외부 사용 시 extern 필요)
-pthread_mutex_t tree_mutex = PTHREAD_MUTEX_INITIALIZER;
-
 // 디렉토리 하나 생성 함수 (뮤텍스 포함)
 int MakeDir(DTree* dirTree, char* dirName, char type) {
+    pthread_mutex_t tree_mutex = PTHREAD_MUTEX_INITIALIZER;//지역변수로 정의 중복 방지
     pthread_mutex_lock(&tree_mutex);
 
     TreeNode* NewNode = (TreeNode*)malloc(sizeof(TreeNode));
@@ -41,6 +35,9 @@ int MakeDir(DTree* dirTree, char* dirName, char type) {
         pthread_mutex_unlock(&tree_mutex);
         return -1;
     }
+
+    time_t ltime;
+    struct tm* Now;
 
     time(&ltime);
     Now = localtime(&ltime);
