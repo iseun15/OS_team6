@@ -1,7 +1,7 @@
 #include "team6.h"
 
 int pwd(DTree* dirTree, Stack* stack, char* cmd) {
-    if (cmd == NULL) {
+    if (!cmd || strlen(cmd) == 0) {//"pwd" 단독 입력 시 input + 4는 NULL이 아닌 빈 문자열이므로 strlen(cmd) == 0도 함께 체크
         PrintPath(dirTree, stack);
     } else if (cmd[0] == '-') {
         if (strcmp(cmd, "--help") == 0) {
