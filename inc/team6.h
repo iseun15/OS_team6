@@ -70,6 +70,7 @@ typedef struct TreeNode{
     struct TreeNode* Parent;
     struct TreeNode* LeftChild;
     struct TreeNode* RightChild;
+    struct TreeNode* RightSibling; // mv 함수에서 사용(김민지)
 }TreeNode;
 
 
@@ -111,6 +112,7 @@ extern DTree* Linux;
 extern Stack* dStack;
 extern TreeNode* lp;
 extern char* arg[];
+extern pthread_mutex_t tree_mutex;
 
 
 
