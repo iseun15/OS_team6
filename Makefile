@@ -1,38 +1,41 @@
-#필드 자동화 위한 파일
-
-# 디렉토리 설정
+# 디렉토리 경로 설정
 SRC_DIR = ./srcs
 INC_DIR = ./inc
 BUILD_DIR = ./build
-RES_DIR = ./resources
+TARGET = os_team6_test
 
-# 실행파일 이름
-TARGET = os_team6
-
-# 추후 삭제 / 없어도 되는데 오류 보기 위해서 넣어둠
+# 컴파일러 및 옵션
 CC = gcc
 CFLAGS = -Wall -I$(INC_DIR)
 
-# 소스 및 오브젝트 파일 리스트 자동 추출
-SRCS = $(wildcard $(SRC_DIR)/*.c)
+# 소스 파일 목록
+SRCS = $(SRC_DIR)/main.c \
+       $(SRC_DIR)/cat.c \
+       $(SRC_DIR)/clear.c \
+       $(SRC_DIR)/tail.c \
+       $(SRC_DIR)/utility.c \
+       $(SRC_DIR)/stack.c \
+       $(SRC_DIR)/user.c \
+       $(SRC_DIR)/dir.c \
+       $(SRC_DIR)/globals.c
+
+# 오브젝트 파일 목록
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
-# 기본 빌드 명령
+# 전체 빌드
 all: $(BUILD_DIR)/$(TARGET)
-$(BUILD_DIR)/$(TARGET): $(OBJS) | $(RES_DIR)
+
+# 실행 파일 생성
+$(BUILD_DIR)/$(TARGET): $(OBJS)
 	$(CC) -o $@ $^ -lpthread
 
-# .c 파일 =>  .o 파일
+# .c -> .o 컴파일 규칙
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# resource 생성
-$(RES_DIR):
-	mkdir -p $(RES_DIR)
-
-
+# 정리
 clean:
-	rm -rf $(BUILD_DIR)/$(TARGET) $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 
-.PHONY: clean all  #만약 clean 파일 존재하면, 파일이 아니라 명령어로 작동할 수 있게 함
+.PHONY: all clean

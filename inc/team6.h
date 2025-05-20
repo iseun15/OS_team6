@@ -133,6 +133,8 @@ void TakePath(DTree* tree, TreeNode* node, Stack* stack);
 void ModeConversAll(TreeNode* node, int mode); //모드 변경
 void ChangeOwnerAll(TreeNode* node, char* userName); //소유자/그룹 변경
 int DirRead(DTree** tree, char* line, char* target, int flag); //특정 경로 탐색
+void LoadNodes(void);
+void SaveNode(TreeNode* node);
 
 //user.c
 void Login(UserList* userList, DTree* dTree);  //로그인

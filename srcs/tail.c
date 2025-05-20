@@ -1,8 +1,5 @@
 #include "team6.h"
 
-// TreeNode* lp = NULL;
-// char* arg[10];
-
 void* tail_worker(void* arg_ptr) {
     char** argv = (char**)arg_ptr;
     TreeNode* temp = lp->LeftChild;
