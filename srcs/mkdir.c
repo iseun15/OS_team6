@@ -68,6 +68,7 @@ int MakeDir(DTree* dirTree, char* dirName, char type) {
     }
 
     pthread_mutex_unlock(&tree_mutex);  //해제
+    printf("mkdir: '%s' created successfully\n", dirName);
     return 0;
 }
 
@@ -112,6 +113,6 @@ int Mkdir(DTree* dirTree, char* cmd) {
         pthread_join(threads[i], NULL);
         free(args[i].AddValues);
     }
-
+    
     return 0;
 }
