@@ -26,7 +26,7 @@ int chmod_(DTree* dirTree, char* cmd) {
         return -1;
     }
 
-    int mode = atoi(token);
+    int mode = strtol(token, NULL, 8); 
 
     // 대상 이름 추출 및 처리
     char* dirName = strtok(NULL, " ");

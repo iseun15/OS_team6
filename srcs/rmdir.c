@@ -44,8 +44,8 @@ int rmdir_cmd(DTree* TreeDir, char* cmd) {
         return -1;
     }
 
-    DirRemove(target);
     printf("rmdir: directory '%s' removed\n", target->name);
+    DirRemove(target);
     TreeDir->current = origin;
     return 0;
 }
