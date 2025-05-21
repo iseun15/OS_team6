@@ -33,37 +33,41 @@ void* mv_thread(void* arg) {
     }
 
     TreeNode* dstNode = DirExistion(TreeDir, dst, 'd');
-    if (dstNode) {
-        TreeNode* parent = srcNode->Parent;
-        TreeNode* child = parent->LeftChild;
-        if (child == srcNode) {
-            parent->LeftChild = srcNode->RightSibling;
-        } else {
-            while (child && child->RightSibling != srcNode)
-                child = child->RightSibling;
-            if (child && child->RightSibling == srcNode)
-                child->RightSibling = srcNode->RightSibling;
-        }
+   if (dstNode) {
+    // 기존 위치에서 제거 (RightChild 구조 기준)
+    TreeNode* parent = srcNode->Parent;
+    TreeNode* child = parent->LeftChild;
 
-        srcNode->Parent = dstNode;
-        srcNode->RightSibling = NULL;
-
-        if (dstNode->LeftChild == NULL) {
-            dstNode->LeftChild = srcNode;
-        } else {
-            TreeNode* last = dstNode->LeftChild;
-            while (last->RightSibling)
-                last = last->RightSibling;
-            last->RightSibling = srcNode;
-        }
-
-        printf("mv: moved '%s' into directory '%s'\n", tmpSrc, dst);
+    if (child == srcNode) {
+        parent->LeftChild = srcNode->RightChild;
     } else {
-        strncpy(srcNode->name, dst, MAX_NAME);
-        srcNode->name[MAX_NAME - 1] = '\0';
-        printf("mv: renamed '%s' to '%s'\n", tmpSrc, dst);
+        while (child && child->RightChild != srcNode)
+            child = child->RightChild;
+        if (child && child->RightChild == srcNode)
+            child->RightChild = srcNode->RightChild;
     }
 
+    // 대상 디렉토리에 붙이기
+    srcNode->Parent = dstNode;
+    srcNode->RightChild = NULL;
+
+    if (dstNode->LeftChild == NULL) {
+        dstNode->LeftChild = srcNode;
+    } else {
+        TreeNode* last = dstNode->LeftChild;
+        while (last->RightChild)
+            last = last->RightChild;
+        last->RightChild = srcNode;
+    }
+    printf("mv: moved '%s' into directory '%s'\n", tmpSrc, dst);
+
+} else {
+    // 단순 이름 변경
+    strncpy(srcNode->name, dst, MAX_NAME);
+    srcNode->name[MAX_NAME - 1] = '\0';
+
+    printf("mv: renamed '%s' to '%s'\n", tmpSrc, dst);
+}
     pthread_mutex_unlock(&tree_mutex); // 락 해제
     pthread_exit(NULL);
 }

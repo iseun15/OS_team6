@@ -1,4 +1,29 @@
 #include "team6.h"
+#include <termios.h>
+#include <unistd.h>
+
+#define MAX_PASS 32
+
+// 비밀번호 입력 시 안 보이게 처리하는 함수
+void get_hidden_password(char* password, size_t size) {
+    struct termios oldt, newt;
+
+    // 현재 터미널 설정 저장
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~ECHO;  // 입력 echo 끄기
+
+    // 새로운 설정 적용
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+    // 비밀번호 입력 받기
+    fgets(password, size, stdin);
+    password[strcspn(password, "\n")] = '\0';  // 개행 제거
+
+    // 원래 설정 복원
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    printf("\n");
+}
 
 void adduser(char* argument, DTree* dirtree, UserList* userlist) {
     time_t timer = time(NULL);
@@ -47,7 +72,10 @@ void adduser(char* argument, DTree* dirtree, UserList* userlist) {
 
     strncpy(newUser->name, newName, MAX_NAME);
     newUser->name[MAX_NAME - 1] = '\0';
-    strcpy(newUser->password, "0000");
+
+    printf("Enter password for user '%s': ", newName);
+    get_hidden_password(newUser->password, MAX_PASS);
+
     snprintf(newUser->dir, MAX_DIR, "/home/%s", newName);
     newUser->UID = newUID;
     newUser->GID = newGID;
