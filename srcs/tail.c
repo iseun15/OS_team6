@@ -1,64 +1,83 @@
 #include "team6.h"
+#include <ctype.h>  // for isspace
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// TreeNode* lp = NULL;
-// char* arg[10];
+void trim_whitespace(char* str) {
+    if (!str) return;
 
-void* tail_worker(void* arg_ptr) {
-    char** argv = (char**)arg_ptr;
-    TreeNode* temp = lp->LeftChild;
-    int line_to_print = 10;
-    const char* filename = NULL;
-
-    // 옵션 파싱
-    if (argv[1] && !strcmp(argv[1], "-n")) {
-        if (!argv[2] || !argv[3]) {
-            printf("사용법: tail -n 줄수 파일이름\n");
-            return NULL;
-        }
-        line_to_print = atoi(argv[2]);
-        filename = argv[3];
-    } else {
-        filename = argv[1];
-    }
-
-    // 파일 탐색
-    while (temp) {
-        if (!strcmp(temp->name, filename)) {
-            int total_lines = temp->line;
-            int skip = total_lines - line_to_print;
-            if (skip < 0) skip = 0;
-
-            char* copy = strdup(temp->contents);
-            char* token = strtok(copy, "\n");
-
-            // 먼저 skip 줄만큼 건너뜀
-            int i = 0;
-            while (token && i < skip) {
-                token = strtok(NULL, "\n");
-                i++;
-            }
-
-            // 나머지 출력
-            while (token) {
-                printf("%s\n", token);
-                token = strtok(NULL, "\n");
-            }
-
-            free(copy);
-            return NULL;
-        }
-        temp = temp->RightChild;
-    }
-
-    printf("현재 디렉토리에서 %s 파일을 찾을 수 없습니다.\n", filename);
-    return NULL;
+    // 앞뒤 공백 제거
+    char* end;
+    while (isspace((unsigned char)*str)) str++;
+    end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) *end-- = '\0';
+    memmove(str, str, strlen(str) + 1);
 }
 
-void tail() {
-    pthread_t tid;
-    if (pthread_create(&tid, NULL, tail_worker, arg) != 0) {
-        perror("스레드 생성 실패");
+void tail(char* args) {
+    if (!args || strlen(args) == 0) {
+        printf("tail: 파일 이름이 필요합니다.\n");
         return;
     }
-    pthread_join(tid, NULL);
+
+    int num_lines = 10;  // 기본값
+    char* filename = NULL;
+
+    // args 복사 후 토큰 분리
+    char* arg_copy = strdup(args);
+    char* token = strtok(arg_copy, " ");
+    while (token) {
+        if (strcmp(token, "-n") == 0) {
+            token = strtok(NULL, " ");
+            if (!token || sscanf(token, "%d", &num_lines) != 1 || num_lines < 1) {
+                printf("tail: 유효한 숫자가 필요합니다.\n");
+                free(arg_copy);
+                return;
+            }
+        } else {
+            filename = token;
+        }
+        token = strtok(NULL, " ");
+    }
+
+    if (!filename) {
+        printf("tail: 파일 이름이 필요합니다.\n");
+        free(arg_copy);
+        return;
+    }
+
+    trim_whitespace(filename);
+
+    TreeNode* file = DirExistion(Linux, filename, '-');
+    if (!file) {
+        printf("tail: 현재 디렉토리에서 '%s' 파일을 찾을 수 없습니다.\n", filename);
+        free(arg_copy);
+        return;
+    }
+
+    if (!file->contents || file->line == 0) {
+        printf("tail: '%s' 파일에 내용이 없습니다.\n", filename);
+        free(arg_copy);
+        return;
+    }
+
+    // 줄 분리 및 출력
+    char* contents = strdup(file->contents);
+    char* lines[1024] = {0};
+    int count = 0;
+
+    char* line = strtok(contents, "\n");
+    while (line && count < 1024) {
+        lines[count++] = line;
+        line = strtok(NULL, "\n");
+    }
+
+    int start = (count > num_lines) ? count - num_lines : 0;
+    for (int i = start; i < count; i++) {
+        printf("%s\n", lines[i]);
+    }
+
+    free(contents);
+    free(arg_copy);
 }
