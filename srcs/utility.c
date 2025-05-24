@@ -6,22 +6,32 @@
 // mode => permission[9] 변환
 int ModeToPermission(TreeNode* node) {
     int mode = node->mode;
-    for (int i = 8; i >= 0; --i) {
-        node->permission[i] = mode % 2;  
-        mode /= 2;
-    }
+    char* p = node->permission;
+
+    p[0] = (node->type == 'd') ? 'd' : '-';  // 디렉토리 여부
+
+    // user
+    p[1] = (mode & 0400) ? 'r' : '-';
+    p[2] = (mode & 0200) ? 'w' : '-';
+    p[3] = (mode & 0100) ? 'x' : '-';
+
+    // group
+    p[4] = (mode & 0040) ? 'r' : '-';
+    p[5] = (mode & 0020) ? 'w' : '-';
+    p[6] = (mode & 0010) ? 'x' : '-';
+
+    // others
+    p[7] = (mode & 0004) ? 'r' : '-';
+    p[8] = (mode & 0002) ? 'w' : '-';
+    p[9] = (mode & 0001) ? 'x' : '-';
+
+    p[10] = '\0';  // 문자열 끝
     return 0;
 }
 
 //permission => rwxr-xr-- 출력
 void PermissionPrint(TreeNode* node) {
-    const char rwx[] = "rwx";
-    for (int i = 0; i < 9; ++i) {
-        if (node->permission[i])
-            printf("%c", rwx[i % 3]);
-        else
-            printf("-");
-    }
+    printf("%s", node->permission);
 }
 
 // 단일 노드 삭제
@@ -30,17 +40,27 @@ void NodeRemove(TreeNode* node) {
 }
 
 // 디렉토리 전체 삭제
-void DirRemove(TreeNode* node) {
-    if (!node) return;
+void DirRemove(TreeNode* target) {
+    TreeNode* parent = target->Parent;
+    if (!parent) return;
 
-    if (node->LeftChild)
-        DirRemove(node->LeftChild);
-    if (node->RightChild)
-        DirRemove(node->RightChild);
+    TreeNode* current = parent->LeftChild;
+    TreeNode* prev = NULL;
 
-    node->LeftChild = NULL;
-    node->RightChild = NULL;
-    NodeRemove(node);
+    while (current) {
+        if (current == target) {
+            if (prev == NULL) {
+                parent->LeftChild = current->RightChild;
+            } else {
+                prev->RightChild = current->RightChild;
+            }
+            break;
+        }
+        prev = current;
+        current = current->RightChild;
+    }
+
+    free(target);  // 단일 노드 삭제
 }
 
 // 디렉토리에서 이름&타입 일치하는 노드 탐색
